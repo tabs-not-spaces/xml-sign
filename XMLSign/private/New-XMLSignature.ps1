@@ -21,6 +21,9 @@ function New-XMLSignature {
     .PARAMETER KeyVaultName
         The name of the Key Vault.
     
+    .PARAMETER AccessToken
+        The Azure access token for Key Vault authentication.
+    
     .OUTPUTS
         Boolean indicating success or failure.
     #>
@@ -39,7 +42,10 @@ function New-XMLSignature {
         [object]$Key,
         
         [Parameter(Mandatory = $true)]
-        [string]$KeyVaultName
+        [string]$KeyVaultName,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$AccessToken
     )
     
     Write-Host "Creating XML signature..." -ForegroundColor Yellow
@@ -96,7 +102,7 @@ function New-XMLSignature {
         Write-Host "Signing with Azure Key Vault..." -ForegroundColor Yellow
         
         # Sign the hash using Azure Key Vault
-        $signature = Invoke-AzureKeyVaultSign -DataToSign $signedInfoHash -KeyVaultName $KeyVaultName -Key $Key -Algorithm "RS256"
+        $signature = Invoke-AzureKeyVaultSign -DataToSign $signedInfoHash -KeyVaultName $KeyVaultName -Key $Key -AccessToken $AccessToken -Algorithm "RS256"
         
         # Set the signature value using reflection (accessing private field)
         $signatureField = $signedXml.GetType().GetField("m_signature", [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::NonPublic)

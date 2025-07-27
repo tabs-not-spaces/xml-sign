@@ -18,6 +18,9 @@ function Invoke-AzureKeyVaultSign {
     .PARAMETER Algorithm
         The signing algorithm to use (default: RS256).
     
+    .PARAMETER AccessToken
+        The Azure access token for Key Vault authentication.
+    
     .OUTPUTS
         Byte array containing the signature.
     #>
@@ -32,18 +35,15 @@ function Invoke-AzureKeyVaultSign {
         [Parameter(Mandatory = $true)]
         [object]$Key,
         
+        [Parameter(Mandatory = $true)]
+        [string]$AccessToken,
+        
         [Parameter(Mandatory = $false)]
         [string]$Algorithm = "RS256"
     )
     
     try {
         Write-Host "Sending hash to Azure Key Vault for signing..." -ForegroundColor Yellow
-        
-        # Get access token for Key Vault
-        $accessToken = (az account get-access-token --resource https://vault.azure.net --query accessToken -o tsv)
-        if (-not $accessToken) {
-            throw "Failed to get access token for Key Vault"
-        }
         
         # Convert byte array to base64 for REST API
         $base64Hash = [Convert]::ToBase64String($DataToSign)
