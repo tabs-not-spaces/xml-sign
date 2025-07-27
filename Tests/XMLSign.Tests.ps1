@@ -37,9 +37,9 @@ Describe "XMLSign Module Tests" {
             $commands.Name | Should -Not -Contain "Connect-XMLSignKeyVault"
         }
 
-        It "Should have exactly one exported function" -Skip:(-not $AzModulesAvailable) {
+        It "Should have exactly two exported functions" -Skip:(-not $AzModulesAvailable) {
             $commands = Get-Command -Module XMLSign
-            $commands.Count | Should -Be 1
+            $commands.Count | Should -Be 2
         }
     }
 
