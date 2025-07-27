@@ -3,20 +3,21 @@
     RootModule = 'XMLSign.psm1'
     ModuleVersion = '1.0.0'
     GUID = '12345678-1234-1234-1234-123456789012'
-    Author = 'XMLSign Team'
-    CompanyName = 'Unknown'
-    Copyright = '(c) XMLSign Team. All rights reserved.'
+    Author = 'Ben Reader'
+    CompanyName = 'powers-hell.com'
+    Copyright = '(c) Ben Reader. All rights reserved.'
     Description = 'PowerShell module for signing XML files using certificates stored in Azure KeyVault'
     
     # Minimum version of the PowerShell engine required by this module
-    PowerShellVersion = '5.1'
+    PowerShellVersion = '7.0'
     
     # Required modules
     RequiredModules = @('Az.Accounts', 'Az.KeyVault')
     
     # Functions to export from this module
     FunctionsToExport = @(
-        'Sign-XMLDocument'
+        'Invoke-XMLSign',
+        'Test-XMLSignature'
     )
     
     # Cmdlets to export from this module
