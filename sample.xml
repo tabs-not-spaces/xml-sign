@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <header>
+        <title>Sample Document</title>
+        <created>2024-01-01</created>
+    </header>
+    <body>
+        <section id="1">
+            <content>This is a sample XML document for testing digital signatures.</content>
+        </section>
+        <section id="2">
+            <content>The XMLSign module can sign this document using Azure KeyVault certificates.</content>
+        </section>
+    </body>
+</document>
