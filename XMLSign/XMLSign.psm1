@@ -18,6 +18,3 @@ foreach ($import in @($Public + $Private)) {
 
 # Export public functions
 Export-ModuleMember -Function $Public.BaseName
-
-# Module variables
-$script:XMLSignContext = @{}

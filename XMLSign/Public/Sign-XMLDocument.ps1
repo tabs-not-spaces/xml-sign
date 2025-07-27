@@ -14,7 +14,7 @@ function Sign-XMLDocument {
     Name of the certificate in Azure KeyVault
     
     .PARAMETER VaultName
-    Name of the Azure KeyVault (optional if already connected via Connect-XMLSignKeyVault)
+    Name of the Azure KeyVault
     
     .PARAMETER OutputPath
     Path where the signed XML file will be saved (optional, defaults to input path with .signed.xml extension)
@@ -24,10 +24,6 @@ function Sign-XMLDocument {
     
     .EXAMPLE
     Sign-XMLDocument -XmlPath "C:\temp\document.xml" -CertificateName "MyCert" -VaultName "MyVault"
-    
-    .EXAMPLE
-    Connect-XMLSignKeyVault -VaultName "MyVault"
-    Sign-XMLDocument -XmlPath "C:\temp\document.xml" -CertificateName "MyCert"
     
     .EXAMPLE
     Sign-XMLDocument -XmlPath "C:\temp\document.xml" -CertificateName "MyCert" -VaultName "MyVault" -OutputPath "C:\temp\signed.xml"
@@ -40,7 +36,8 @@ function Sign-XMLDocument {
         [Parameter(Mandatory = $true)]
         [string]$CertificateName,
         
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [string]$VaultName,
         
         [Parameter(Mandatory = $false)]
@@ -56,16 +53,7 @@ function Sign-XMLDocument {
             throw "XML file not found: $XmlPath"
         }
         
-        # Determine vault name
-        if (-not $VaultName) {
-            if ($script:XMLSignContext.Connected -and $script:XMLSignContext.VaultName) {
-                $VaultName = $script:XMLSignContext.VaultName
-                Write-Verbose "Using connected vault: $VaultName"
-            }
-            else {
-                throw "VaultName parameter is required when not connected via Connect-XMLSignKeyVault"
-            }
-        }
+        # VaultName is now mandatory, so no need to check
         
         # Determine output path
         if (-not $OutputPath) {

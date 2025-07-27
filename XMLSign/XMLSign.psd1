@@ -16,8 +16,7 @@
     
     # Functions to export from this module
     FunctionsToExport = @(
-        'Sign-XMLDocument',
-        'Connect-XMLSignKeyVault'
+        'Sign-XMLDocument'
     )
     
     # Cmdlets to export from this module
