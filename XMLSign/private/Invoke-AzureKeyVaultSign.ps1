@@ -25,6 +25,7 @@ function Invoke-AzureKeyVaultSign {
         Byte array containing the signature.
     #>
     
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
         [byte[]]$DataToSign,
@@ -43,7 +44,7 @@ function Invoke-AzureKeyVaultSign {
     )
     
     try {
-        Write-Host "Sending hash to Azure Key Vault for signing..." -ForegroundColor Yellow
+        Write-Verbose "Sending hash to Azure Key Vault for signing..."
         
         # Convert byte array to base64 for REST API
         $base64Hash = [Convert]::ToBase64String($DataToSign)
@@ -54,21 +55,21 @@ function Invoke-AzureKeyVaultSign {
         
         $headers = @{
             "Authorization" = "Bearer $accessToken"
-            "Content-Type" = "application/json"
+            "Content-Type"  = "application/json"
         }
         
         $body = @{
-            alg = $Algorithm
+            alg   = $Algorithm
             value = $base64Hash
         } | ConvertTo-Json
         
-        Write-Host "Calling Key Vault REST API: $signUrl" -ForegroundColor Gray
+        Write-Verbose "Calling Key Vault REST API: $signUrl"
         
         # Make the REST API call
         $response = Invoke-RestMethod -Uri $signUrl -Method POST -Headers $headers -Body $body
         
         if ($response -and $response.value) {
-            Write-Host "✓ Successfully received signature from Key Vault" -ForegroundColor Green
+            Write-Verbose "Successfully received signature from Key Vault"
             
             # Convert base64 result back to bytes - handle URL-safe base64 format from Azure Key Vault
             $base64Value = $response.value

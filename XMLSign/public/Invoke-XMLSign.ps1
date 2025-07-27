@@ -82,15 +82,15 @@ function Invoke-XMLSign {
         }
         
         # Get access token for Key Vault
-        Write-Host "Getting access token for Key Vault..." -ForegroundColor Yellow
+        Write-Verbose "Getting access token for Key Vault..."
         $accessToken = (az account get-access-token --resource https://vault.azure.net --query accessToken -o tsv)
         if (-not $accessToken) {
             throw "Failed to get access token for Key Vault"
         }
-        Write-Host "✓ Access token acquired" -ForegroundColor Green
+        Write-Verbose "Access token acquired"
         
         # Load XML document
-        Write-Host "Loading XML document..." -ForegroundColor Yellow
+        Write-Verbose "Loading XML document..."
         $xmlDoc = New-Object System.Xml.XmlDocument
         $xmlDoc.PreserveWhitespace = $true
         
@@ -99,7 +99,7 @@ function Invoke-XMLSign {
         }
         
         $xmlDoc.Load($XmlFileToSign)
-        Write-Host "✓ XML document loaded: $XmlFileToSign" -ForegroundColor Green
+        Write-Verbose "XML document loaded: $XmlFileToSign"
         
         # Sign the document
         $result = New-XMLSignature -XmlDocument $xmlDoc -OutputPath $XmlFileToSave -Certificate $keyVaultAssets.Certificate -Key $keyVaultAssets.Key -KeyVaultName $KeyVaultName -AccessToken $accessToken

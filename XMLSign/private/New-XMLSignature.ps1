@@ -28,6 +28,7 @@ function New-XMLSignature {
         Boolean indicating success or failure.
     #>
     
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
         [System.Xml.XmlDocument]$XmlDocument,
@@ -48,7 +49,7 @@ function New-XMLSignature {
         [string]$AccessToken
     )
     
-    Write-Host "Creating XML signature..." -ForegroundColor Yellow
+    Write-Verbose "Creating XML signature..."
     
     try {
         # Load required .NET assemblies
@@ -86,20 +87,20 @@ function New-XMLSignature {
         $keyInfo.AddClause($keyInfoData)
         $signedXml.KeyInfo = $keyInfo
         
-        Write-Host "Building digested references..." -ForegroundColor Yellow
+        Write-Verbose "Building digested references..."
         
         # Use reflection to call the internal BuildDigestedReferences method (similar to C# version)
         $buildDigestedReferencesMethod = $signedXml.GetType().GetMethod("BuildDigestedReferences", [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::NonPublic)
         $buildDigestedReferencesMethod.Invoke($signedXml, $null)
         
-        Write-Host "Computing signature hash..." -ForegroundColor Yellow
+        Write-Verbose "Computing signature hash..."
         
         # Get the canonical form of SignedInfo for signing
         $getC14NDigestMethod = $signedXml.GetType().GetMethod("GetC14NDigest", [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::NonPublic)
         $sha256 = [System.Security.Cryptography.SHA256]::Create()
         $signedInfoHash = $getC14NDigestMethod.Invoke($signedXml, @($sha256))
         
-        Write-Host "Signing with Azure Key Vault..." -ForegroundColor Yellow
+        Write-Verbose "Signing with Azure Key Vault..."
         
         # Sign the hash using Azure Key Vault
         $signature = Invoke-AzureKeyVaultSign -DataToSign $signedInfoHash -KeyVaultName $KeyVaultName -Key $Key -AccessToken $AccessToken -Algorithm "RS256"

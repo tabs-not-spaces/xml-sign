@@ -16,6 +16,7 @@ function Get-KeyVaultCertificateAndKey {
         Hashtable containing Certificate and Key objects, or $null if failed.
     #>
     
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
         [string]$KeyVaultName,
@@ -24,20 +25,20 @@ function Get-KeyVaultCertificateAndKey {
         [string]$CertificateName
     )
     
-    Write-Host "Retrieving certificate and key from Key Vault..." -ForegroundColor Yellow
+    Write-Verbose "Retrieving certificate and key from Key Vault..."
     
     try {
         # Get certificate
         $certificate = Get-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertificateName -ErrorAction Stop
-        Write-Host "✓ Retrieved certificate: $CertificateName" -ForegroundColor Green
+        Write-Verbose "Retrieved certificate: $CertificateName"
         
         # Get key
         $key = Get-AzKeyVaultKey -VaultName $KeyVaultName -Name $CertificateName -ErrorAction Stop
-        Write-Host "✓ Retrieved key: $CertificateName" -ForegroundColor Green
+        Write-Verbose "Retrieved key: $CertificateName"
         
         return @{
             Certificate = $certificate
-            Key = $key
+            Key         = $key
         }
     }
     catch {

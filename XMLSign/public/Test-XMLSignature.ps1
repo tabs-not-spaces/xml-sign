@@ -39,7 +39,7 @@ function Test-XMLSignature {
     }
     
     Write-Host "Validating XML document: $XmlFilePath" -ForegroundColor Cyan
-    Write-Host "Validating XML signature..." -ForegroundColor Yellow
+    Write-Verbose "Validating XML signature..."
     
     try {
         # Load XML document
