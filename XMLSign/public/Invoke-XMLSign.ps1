@@ -81,6 +81,14 @@ function Invoke-XMLSign {
             throw "Failed to retrieve certificate and key from Key Vault '$KeyVaultName' for certificate '$CertificateName'"
         }
         
+        # Get access token for Key Vault
+        Write-Host "Getting access token for Key Vault..." -ForegroundColor Yellow
+        $accessToken = (az account get-access-token --resource https://vault.azure.net --query accessToken -o tsv)
+        if (-not $accessToken) {
+            throw "Failed to get access token for Key Vault"
+        }
+        Write-Host "✓ Access token acquired" -ForegroundColor Green
+        
         # Load XML document
         Write-Host "Loading XML document..." -ForegroundColor Yellow
         $xmlDoc = New-Object System.Xml.XmlDocument
@@ -94,7 +102,7 @@ function Invoke-XMLSign {
         Write-Host "✓ XML document loaded: $XmlFileToSign" -ForegroundColor Green
         
         # Sign the document
-        $result = New-XMLSignature -XmlDocument $xmlDoc -OutputPath $XmlFileToSave -Certificate $keyVaultAssets.Certificate -Key $keyVaultAssets.Key -KeyVaultName $KeyVaultName
+        $result = New-XMLSignature -XmlDocument $xmlDoc -OutputPath $XmlFileToSave -Certificate $keyVaultAssets.Certificate -Key $keyVaultAssets.Key -KeyVaultName $KeyVaultName -AccessToken $accessToken
         
         if (-not $result) {
             throw "XML document signing failed"
