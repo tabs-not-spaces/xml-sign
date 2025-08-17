@@ -2,13 +2,13 @@
 param(
     [Parameter()]
     [string]$BuildVersion,
-    
+
     [Parameter()]
     [switch]$IncrementMajor,
-    
+
     [Parameter()]
     [switch]$IncrementMinor,
-    
+
     [Parameter()]
     [switch]$IncrementPatch = $true
 )
@@ -26,7 +26,7 @@ $ErrorActionPreference = 'Stop'
 $ModuleName = 'XMLSign'
 $SourcePath = Join-Path $PSScriptRoot $ModuleName
 $ManifestPath = Join-Path $SourcePath "$ModuleName.psd1"
-$PublicPath = Join-Path $SourcePath 'Public'
+$PublicPath = Join-Path $SourcePath 'public'
 
 Write-Host "Building module: $ModuleName" -ForegroundColor Green
 
@@ -52,7 +52,7 @@ if ($BuildVersion) {
     Write-Host "Using specified version: $NewVersion" -ForegroundColor Yellow
 } else {
     $CurrentVersion = [Version]$Manifest.ModuleVersion
-    
+
     if ($IncrementMajor) {
         $NewVersion = [Version]::new($CurrentVersion.Major + 1, 0, 0)
         Write-Host "Incrementing major version: $($CurrentVersion) -> $NewVersion" -ForegroundColor Yellow
@@ -73,13 +73,13 @@ $PublicFiles = Get-ChildItem -Path $PublicPath -Filter "*.ps1" -File
 
 foreach ($File in $PublicFiles) {
     Write-Host "  Processing: $($File.Name)" -ForegroundColor Gray
-    
+
     # Read the file content to extract function names
     $Content = Get-Content -Path $File.FullName -Raw
-    
+
     # Use regex to find function declarations
     $FunctionMatches = [regex]::Matches($Content, '^\s*function\s+([a-zA-Z][\w-]*)', [System.Text.RegularExpressions.RegexOptions]::Multiline)
-    
+
     foreach ($Match in $FunctionMatches) {
         $FunctionName = $Match.Groups[1].Value
         $PublicFunctions += $FunctionName
