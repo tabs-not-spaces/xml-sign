@@ -2,6 +2,8 @@
 
 A PowerShell module for signing XML files using certificates stored in Azure KeyVault. This module provides a simple interface to authenticate with Azure KeyVault and digitally sign XML documents using HSM-backed certificates.
 
+This is necessary for the unusual edge case scenario where you need to sign XML files, as most modern solutions (read: AzSignTool) do not support signing XML files with certificates in Azure Key Vaults.
+
 ## Features
 
 - Interactive Azure authentication using Az modules
@@ -134,7 +136,7 @@ XMLSign/
 ## Azure KeyVault Setup
 
 1. Create an Azure KeyVault with HSM support
-2. Import or generate a certificate with private key in the HSM
+2. Import or generate a certificate with a private key in the AzKV or HSM AzKV
 3. Grant appropriate permissions to your Azure account:
    - Key Permissions: Get, Sign, Verify
    - Certificate Permissions: Get
@@ -184,4 +186,4 @@ if ($isValid) {
 
 ## Contributing
 
-This module follows PowerShell best practices and standard module structure. Contributions are welcome!
+This module adheres to PowerShell best practices and follows the standard module structure. Contributions are welcome!
